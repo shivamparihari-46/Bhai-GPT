@@ -152,6 +152,7 @@ if uploaded_file is not None:
         
     elif section=="ML Predictor":
         
+        from sklearn.utils.multiclass import type_of_target
         output=st.selectbox("Choose your output column ",x.columns)
         
         from sklearn.preprocessing import LabelEncoder
@@ -170,6 +171,9 @@ if uploaded_file is not None:
         ip=x.drop(columns=output)
         op=x[output]  
         
+        p_type = type_of_target(op)
+        st.write(f"automatically detected problem type: **{p_type}**")
+        
         Train_size=st.slider("train_size",0.55,0.99,0.8)
         from sklearn.model_selection import train_test_split
         xtrain,xtest,ytrain,ytest=train_test_split(ip,op,train_size=Train_size)   
@@ -182,18 +186,8 @@ if uploaded_file is not None:
         xtrain = standard.fit_transform(xtrain)
         xtest = standard.transform(xtest)
         
-        from sklearn.utils.multiclass import type_of_target
-        problem_type = type_of_target(op)
-
-        if problem_type == 'continuous':
-            p_type = 'regression'
-            st.info("Regression problem detected based on target column.")
-        else:
-            p_type = 'classification'
-            st.info("Classification problem detected based on target column.")
-
         
-        if p_type=='regression':
+        if p_type=='continuous':
             from sklearn.linear_model import LinearRegression
             lr=LinearRegression()
             lr.fit(xtrain,ytrain)
@@ -214,7 +208,7 @@ if uploaded_file is not None:
             fig=sns.lmplot(x='y-test',y='prediction',data=e)
             st.pyplot(fig.fig)
             
-        elif p_type=='classification':
+        elif p_type in ['binary', 'multiclass']:
             from sklearn.svm import SVC
             from sklearn.linear_model import LogisticRegression
             from sklearn.neighbors import KNeighborsClassifier
@@ -224,7 +218,7 @@ if uploaded_file is not None:
             from xgboost import XGBClassifier 
             from sklearn.inspection import permutation_importance
             
-
+        
             
             models={
             "svm": SVC(),
@@ -282,6 +276,12 @@ if uploaded_file is not None:
             fig, ax = plt.subplots(figsize=(12,6))
             sns.barplot(x='Importance', y='Feature', data=importance_df, ax=ax, palette='coolwarm')
             st.pyplot(fig)
+
+        elif p_type in ['multilabel-indicator', 'multioutput', 'multiclass-multioutput']:
+    
+            st.warning("multi label and multi output detected. Ye abhi supported nahi hai.")
+        else:
+            st.error(f"kuch unexpected type mila: {p_type}")
 
 
 
