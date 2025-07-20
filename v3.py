@@ -164,13 +164,24 @@ if uploaded_file is not None:
                 x[i] = x[i].fillna(x[i].mean())
                 
         
-        for i in x.columns:
-            if x[i].dtype == "object":
-                x[i] = le.fit_transform(x[i])      
+             
                 
         ip=x.drop(columns=output)
         op=x[output]  
         
+        label_encoders = {}
+        for i in ip.columns:
+            if ip[i].dtype == "object":
+                le = LabelEncoder()
+                ip[i] = le.fit_transform(ip[i])
+                label_encoders[i] = le
+                
+        if op.dtype == "object":
+            le_target = LabelEncoder()
+            op = le_target.fit_transform(op)
+        else:
+            le_target = None
+            
         p_type = type_of_target(op)
         st.write(f"automatically detected problem type: **{p_type}**")
         
