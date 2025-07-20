@@ -1,4 +1,4 @@
-# **Bhai-GPT – Your Desi Yet Professional Data Scientist**
+# **Bhai-GPT**
 
 **Bhai-GPT** is a fun, powerful, and fully functional **Streamlit-based data science assistant**.  
 Upload any CSV dataset, and Bhai-GPT will analyze, visualize, clean, and even build machine learning models for you — all with a desi touch .
