@@ -182,7 +182,16 @@ if uploaded_file is not None:
         xtrain = standard.fit_transform(xtrain)
         xtest = standard.transform(xtest)
         
-        p_type=st.selectbox("select your type of problem bhai",['classification','regression'])
+        from sklearn.utils.multiclass import type_of_target
+        problem_type = type_of_target(op)
+
+        if problem_type == 'continuous':
+            p_type = 'regression'
+            st.info("Regression problem detected based on target column.")
+        else:
+            p_type = 'classification'
+            st.info("Classification problem detected based on target column.")
+
         
         if p_type=='regression':
             from sklearn.linear_model import LinearRegression
@@ -214,6 +223,8 @@ if uploaded_file is not None:
             from sklearn.ensemble import RandomForestClassifier 
             from xgboost import XGBClassifier 
             from sklearn.inspection import permutation_importance
+            
+
             
             models={
             "svm": SVC(),
