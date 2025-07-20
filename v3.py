@@ -3,7 +3,11 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-st.set_page_config(page_title="Bhai-GPT", layout="wide")
+st.set_page_config(
+    page_title="Bhai-GPT", 
+    layout="wide",
+    page_icon="./assets/logo.jpg"
+    )
 
 st.markdown("""
     <style>
