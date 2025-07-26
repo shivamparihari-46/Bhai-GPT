@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 st.set_page_config(
     page_title="Bhai-GPT", 
     layout="wide",
-    page_icon="./assets/logo.jpg"
+    page_icon="./assets/icon.jpg"
     )
 
 st.markdown("""
@@ -31,7 +31,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.title("📊Bhai-GPT – Your Desi yet Professional Data Scientist")
+st.title("📊Bhai-GPT – Your Desi Data Scientist")
 st.markdown(
     "<p style='font-size:28px; font-weight:600;'>Upload your data. Let Bhai-GPT do the rest!!</p>", 
     unsafe_allow_html=True
