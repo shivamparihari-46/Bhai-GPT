@@ -48,7 +48,7 @@ if uploaded_file is not None:
          " Graph Visualization", 
          " Pairplot", 
          " Unique Values",
-         "coorel^n-heatmap",
+         "coorelation-map",
          "ML Predictor"]
     )
     
@@ -229,6 +229,7 @@ if uploaded_file is not None:
             from xgboost import XGBClassifier 
             from sklearn.inspection import permutation_importance
             
+            
         
             
             models={
@@ -255,6 +256,7 @@ if uploaded_file is not None:
                     'model':name,
                     'accuracy':round(acc,4),
                     'f1 score':round(f1,4)
+                    
                 })   
                 
 
@@ -296,7 +298,7 @@ if uploaded_file is not None:
 
 
 
-    elif section=="coorel^n-heatmap":
+    elif section=="coorelation-map":
         
         n=x.select_dtypes(include='number')
         fig, ax = plt.subplots()
