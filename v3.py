@@ -324,7 +324,7 @@ if uploaded_file is not None:
 
             elif p_type in ['multilabel-indicator', 'multioutput', 'multiclass-multioutput','multiclass']:
         
-                st.warning("multi label and multi output detected. Ye abhi supported nahi hai.")
+                st.warning("multi label and multi output and multiclass detected. Ye abhi supported nahi hai.")
             else:
                 st.error(f"kuch unexpected type mila: {p_type}")
 
