@@ -59,7 +59,8 @@ if uploaded_file is not None:
     if section == " Data Overview":
         st.success("Data received succesfully bhai!")
         st.markdown("<p style='font-weight:600;font-size:20px; '>Data dekh le:</p>",unsafe_allow_html=True)
-        st.dataframe(x)
+        st.dataframe(x.astype(str))
+
         st.markdown("<p style='font-weight:600;font-size:20px; '> Data summary:</p>",unsafe_allow_html=True)
         st.write(x.describe(include='all'))
         st.write(f"Shape of your data: {x.shape[0]} rows × {x.shape[1]} columns")
@@ -266,7 +267,8 @@ if uploaded_file is not None:
 
             result_df = pd.DataFrame(result)
             st.markdown("### model comparison report:")
-            st.dataframe(result_df)
+            st.dataframe(result_df.astype(str))
+
 
             best_model = max(result, key=lambda x: x['accuracy'])
             st.success(f"Best model: {best_model['model'].upper()} with accuracy {best_model['accuracy']}")
