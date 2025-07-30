@@ -166,6 +166,7 @@ if uploaded_file is not None:
             if x[i].dtype == 'object':
                 x[i] = x[i].fillna('missing')
             else:
+                x[i] = pd.to_numeric(x[i], errors='coerce')
                 x[i] = x[i].fillna(x[i].mean())
                 
         
@@ -191,6 +192,9 @@ if uploaded_file is not None:
             op = le_target.fit_transform(op)
         else:
             le_target = None
+            
+        ip = ip.apply(pd.to_numeric, errors='coerce')
+        ip = ip.fillna(0)    
             
         # Validate output column before model training
         if pd.Series(op).nunique() <= 1:
