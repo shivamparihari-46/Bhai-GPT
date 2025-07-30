@@ -196,7 +196,7 @@ if uploaded_file is not None:
         ip = ip.apply(pd.to_numeric, errors='coerce')
         ip = ip.fillna(0)    
             
-        # Validate output column before model training
+        
         if pd.Series(op).nunique() <= 1:
 
             st.error("Bhai, output column mein sirf ek hi class hai ya data galat hai. Model training nahi ho sakti.")
@@ -224,7 +224,7 @@ if uploaded_file is not None:
         xtest = standard.transform(xtest)
         
         try:
-    # Your existing model training & evaluation code
+    
 
 
             if p_type=='continuous':
