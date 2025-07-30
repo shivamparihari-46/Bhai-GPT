@@ -41,6 +41,10 @@ uploaded_file = st.file_uploader("Upload your CSV file bhai", type=['csv'])
 
 if uploaded_file is not None:
     x = pd.read_csv(uploaded_file)
+    
+    for col in x.select_dtypes(include='object').columns:
+        x[col] = x[col].astype(str)
+
     st.sidebar.title("Navigation")
     section = st.sidebar.radio("Bhai, kya dekhna chahta hai?", 
         [" Data Overview", 
@@ -53,7 +57,7 @@ if uploaded_file is not None:
     )
     
     if section == " Data Overview":
-        st.success("Data mil gaya bhai!")
+        st.success("Data received succesfully bhai!")
         st.markdown("<p style='font-weight:600;font-size:20px; '>Data dekh le:</p>",unsafe_allow_html=True)
         st.dataframe(x)
         st.markdown("<p style='font-weight:600;font-size:20px; '> Data summary:</p>",unsafe_allow_html=True)
@@ -234,7 +238,7 @@ if uploaded_file is not None:
             
             models={
             "svm": SVC(),
-            "logistic regression": LogisticRegression(),
+            "logistic regression": LogisticRegression(multi_class='multinomial', solver='lbfgs', max_iter=1000),
             "knn": KNeighborsClassifier(),
             "naive bayes": GaussianNB(),
             "desicion tree ": DecisionTreeClassifier(),
