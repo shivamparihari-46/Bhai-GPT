@@ -307,7 +307,9 @@ if uploaded_file is not None:
                 model_name = st.selectbox("Select type of model:", list(models.keys()))
                 x = models[model_name] 
                 x.fit(xtrain,ytrain)
-                result = permutation_importance(x, xtest, ytest, n_repeats=10, random_state=42)
+                with st.spinner("Feature importance calculate ho raha bhai... wait kar"):
+                     result = permutation_importance(x, xtest, ytest, n_repeats=3, random_state=42)
+
 
                 importance_df = pd.DataFrame({
                     'Feature': ip.columns,
