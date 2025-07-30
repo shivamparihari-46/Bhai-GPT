@@ -174,6 +174,11 @@ if uploaded_file is not None:
         ip=x.drop(columns=output)
         op=x[output]  
         
+        for col in ip.columns:
+            if ip[col].nunique() > 1000:
+                ip = ip.drop(columns=[col])
+                
+                
         label_encoders = {}
         for i in ip.columns:
             if ip[i].dtype == "object":
@@ -187,7 +192,19 @@ if uploaded_file is not None:
         else:
             le_target = None
             
+        # Validate output column before model training
+        if pd.Series(op).nunique() <= 1:
+
+            st.error("Bhai, output column mein sirf ek hi class hai ya data galat hai. Model training nahi ho sakti.")
+            st.stop()
+
+        if pd.Series(op).isnull().any():
+
+            st.error("Bhai, output column mein null values hain. Unhe remove ya fill karo.")
+            st.stop()
+
         p_type = type_of_target(op)
+
         st.write(f"automatically detected problem type: **{p_type}**")
         
         Train_size=st.slider("train_size",0.55,0.99,0.8)
@@ -202,107 +219,112 @@ if uploaded_file is not None:
         xtrain = standard.fit_transform(xtrain)
         xtest = standard.transform(xtest)
         
-        
-        if p_type=='continuous':
-            from sklearn.linear_model import LinearRegression
-            lr=LinearRegression()
-            lr.fit(xtrain,ytrain)
-            pred=lr.predict(xtest)
+        try:
+    # Your existing model training & evaluation code
 
-            from sklearn.metrics import r2_score, mean_squared_error
 
-            r2 = r2_score(ytest, pred)
-            mse = mean_squared_error(ytest, pred)
+            if p_type=='continuous':
+                from sklearn.linear_model import LinearRegression
+                lr=LinearRegression()
+                lr.fit(xtrain,ytrain)
+                pred=lr.predict(xtest)
 
-            st.write(f"R² Score: {r2}")
-            st.write(f"Mean Squared Error: {mse}")
+                from sklearn.metrics import r2_score, mean_squared_error
 
-            
-            e=pd.DataFrame({'y-test':list(ytest),'prediction':list(pred)})
-            st.markdown("<p style='font-weight:600;font-size:20px; '>Best fit line:</p>",unsafe_allow_html=True)
-            
-            fig=sns.lmplot(x='y-test',y='prediction',data=e)
-            st.pyplot(fig.fig)
-            
-        elif p_type in ['binary', 'multiclass']:
-            from sklearn.svm import SVC
-            from sklearn.linear_model import LogisticRegression
-            from sklearn.neighbors import KNeighborsClassifier
-            from sklearn.naive_bayes import GaussianNB
-            from sklearn.tree import DecisionTreeClassifier 
-            from sklearn.ensemble import RandomForestClassifier 
-            from xgboost import XGBClassifier 
-            from sklearn.inspection import permutation_importance
-            
-            
-        
-            
-            models={
-            "svm": SVC(),
-            "logistic regression": LogisticRegression(multi_class='multinomial', solver='lbfgs', max_iter=1000),
-            "knn": KNeighborsClassifier(),
-            "naive bayes": GaussianNB(),
-            "desicion tree ": DecisionTreeClassifier(),
-            "random forest": RandomForestClassifier(),
-            "xgb":XGBClassifier(n_estimators=100,learning_rate=0.1,max_depth=3,eval_metric='mlogloss',random_state=42,use_label_encoder=False)}
-            
-            result=[]
-            from sklearn.metrics import accuracy_score,confusion_matrix,f1_score
-            
-            for name,model in models.items():
-                model.fit(xtrain,ytrain)
-                pred=model.predict(xtest)
-                acc=accuracy_score(ytest,pred)
-                cm=confusion_matrix(ytest,pred)
-                f1 = f1_score(ytest, pred, average='weighted')
+                r2 = r2_score(ytest, pred)
+                mse = mean_squared_error(ytest, pred)
+
+                st.write(f"R² Score: {r2}")
+                st.write(f"Mean Squared Error: {mse}")
+
                 
-             
-                result.append({
-                    'model':name,
-                    'accuracy':round(acc,4),
-                    'f1 score':round(f1,4)
+                e=pd.DataFrame({'y-test':list(ytest),'prediction':list(pred)})
+                st.markdown("<p style='font-weight:600;font-size:20px; '>Best fit line:</p>",unsafe_allow_html=True)
+                
+                fig=sns.lmplot(x='y-test',y='prediction',data=e)
+                st.pyplot(fig.fig)
+                
+            elif p_type in ['binary', 'multiclass']:
+                from sklearn.svm import SVC
+                from sklearn.linear_model import LogisticRegression
+                from sklearn.neighbors import KNeighborsClassifier
+                from sklearn.naive_bayes import GaussianNB
+                from sklearn.tree import DecisionTreeClassifier 
+                from sklearn.ensemble import RandomForestClassifier 
+                from xgboost import XGBClassifier 
+                from sklearn.inspection import permutation_importance
+                
+                
+            
+                
+                models={
+                "svm": SVC(),
+                "logistic regression": LogisticRegression(multi_class='multinomial', solver='lbfgs', max_iter=1000),
+                "knn": KNeighborsClassifier(),
+                "naive bayes": GaussianNB(),
+                "desicion tree ": DecisionTreeClassifier(),
+                "random forest": RandomForestClassifier(),
+                "xgb":XGBClassifier(n_estimators=100,learning_rate=0.1,max_depth=3,eval_metric='mlogloss',random_state=42,use_label_encoder=False)}
+                
+                result=[]
+                from sklearn.metrics import accuracy_score,confusion_matrix,f1_score
+                
+                for name,model in models.items():
+                    model.fit(xtrain,ytrain)
+                    pred=model.predict(xtest)
+                    acc=accuracy_score(ytest,pred)
+                    cm=confusion_matrix(ytest,pred)
+                    f1 = f1_score(ytest, pred, average='weighted')
                     
-                })   
                 
+                    result.append({
+                        'model':name,
+                        'accuracy':round(acc,4),
+                        'f1 score':round(f1,4)
+                        
+                    })   
+                    
 
-            result_df = pd.DataFrame(result)
-            st.markdown("### model comparison report:")
-            st.dataframe(result_df.astype(str))
+                result_df = pd.DataFrame(result)
+                st.markdown("### model comparison report:")
+                st.dataframe(result_df.astype(str))
 
 
-            best_model = max(result, key=lambda x: x['accuracy'])
-            st.success(f"Best model: {best_model['model'].upper()} with accuracy {best_model['accuracy']}")
+                best_model = max(result, key=lambda x: x['accuracy'])
+                st.success(f"Best model: {best_model['model'].upper()} with accuracy {best_model['accuracy']}")
+                
+                fig, ax = plt.subplots()
+                fig, ax = plt.subplots(figsize=(12, 6))
+                sns.barplot(x='model', y='accuracy', data=result_df, palette='viridis', ax=ax)
+                ax.set_title("Model Accuracy Comparison")
+                st.pyplot(fig)
             
-            fig, ax = plt.subplots()
-            fig, ax = plt.subplots(figsize=(12, 6))
-            sns.barplot(x='model', y='accuracy', data=result_df, palette='viridis', ax=ax)
-            ax.set_title("Model Accuracy Comparison")
-            st.pyplot(fig)
-        
-        
-            model_name = st.selectbox("Select type of model:", list(models.keys()))
-            x = models[model_name] 
-            x.fit(xtrain,ytrain)
-            result = permutation_importance(x, xtest, ytest, n_repeats=10, random_state=42)
-
-            importance_df = pd.DataFrame({
-                'Feature': ip.columns,
-                'Importance': result.importances_mean
-            }).sort_values(by='Importance', ascending=False)
-            st.markdown("#### feature importances:")
-            st.dataframe(importance_df)
             
-            fig, ax = plt.subplots(figsize=(12,6))
-            sns.barplot(x='Importance', y='Feature', data=importance_df, ax=ax, palette='coolwarm')
-            st.pyplot(fig)
+                model_name = st.selectbox("Select type of model:", list(models.keys()))
+                x = models[model_name] 
+                x.fit(xtrain,ytrain)
+                result = permutation_importance(x, xtest, ytest, n_repeats=10, random_state=42)
 
-        elif p_type in ['multilabel-indicator', 'multioutput', 'multiclass-multioutput']:
-    
-            st.warning("multi label and multi output detected. Ye abhi supported nahi hai.")
-        else:
-            st.error(f"kuch unexpected type mila: {p_type}")
+                importance_df = pd.DataFrame({
+                    'Feature': ip.columns,
+                    'Importance': result.importances_mean
+                }).sort_values(by='Importance', ascending=False)
+                st.markdown("#### feature importances:")
+                st.dataframe(importance_df)
+                
+                fig, ax = plt.subplots(figsize=(12,6))
+                sns.barplot(x='Importance', y='Feature', data=importance_df, ax=ax, palette='coolwarm')
+                st.pyplot(fig)
 
+            elif p_type in ['multilabel-indicator', 'multioutput', 'multiclass-multioutput']:
+        
+                st.warning("multi label and multi output detected. Ye abhi supported nahi hai.")
+            else:
+                st.error(f"kuch unexpected type mila: {p_type}")
 
+        except Exception as e:
+            st.error(f"Bhai, kuch error aa gaya model training mein: {e}")
+            st.stop()
 
     elif section=="coorelation-map":
         
