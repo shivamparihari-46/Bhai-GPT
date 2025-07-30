@@ -248,7 +248,7 @@ if uploaded_file is not None:
                 fig=sns.lmplot(x='y-test',y='prediction',data=e)
                 st.pyplot(fig.fig)
                 
-            elif p_type in ['binary', 'multiclass']:
+            elif p_type=='binary':
                 from sklearn.svm import SVC
                 from sklearn.linear_model import LogisticRegression
                 from sklearn.neighbors import KNeighborsClassifier
@@ -263,7 +263,7 @@ if uploaded_file is not None:
                 
                 models={
                 "svm": SVC(),
-                "logistic regression": LogisticRegression(multi_class='multinomial', solver='lbfgs', max_iter=1000),
+                "logistic regression": LogisticRegression(),
                 "knn": KNeighborsClassifier(),
                 "naive bayes": GaussianNB(),
                 "desicion tree ": DecisionTreeClassifier(),
@@ -322,7 +322,7 @@ if uploaded_file is not None:
                 sns.barplot(x='Importance', y='Feature', data=importance_df, ax=ax, palette='coolwarm')
                 st.pyplot(fig)
 
-            elif p_type in ['multilabel-indicator', 'multioutput', 'multiclass-multioutput']:
+            elif p_type in ['multilabel-indicator', 'multioutput', 'multiclass-multioutput','multiclass']:
         
                 st.warning("multi label and multi output detected. Ye abhi supported nahi hai.")
             else:
