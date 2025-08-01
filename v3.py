@@ -9,6 +9,7 @@ st.set_page_config(
     page_icon="./assets/icon.jpg"
     )
 
+
 st.markdown("""
     <style>
         /* Table font size */
@@ -30,6 +31,8 @@ st.markdown("""
         }
     </style>
 """, unsafe_allow_html=True)
+
+
 
 st.title("📊Bhai-GPT – Your Desi Data Scientist")
 st.markdown(
@@ -322,9 +325,31 @@ if uploaded_file is not None:
                 sns.barplot(x='Importance', y='Feature', data=importance_df, ax=ax, palette='coolwarm')
                 st.pyplot(fig)
 
-            elif p_type in ['multilabel-indicator', 'multioutput', 'multiclass-multioutput','multiclass']:
+         
+            
+            elif p_type == "multiclass":
+                from sklearn.ensemble import RandomForestClassifier
+                from sklearn.metrics import classification_report, accuracy_score, confusion_matrix
+
+                clf = RandomForestClassifier()
+                clf.fit(xtrain, ytrain)
+                pred = clf.predict(xtest)
+
+                acc = accuracy_score(ytest, pred)
+                cm = confusion_matrix(ytest, pred)
+                report = classification_report(ytest, pred, output_dict=True)
+                st.success(f"Multiclass classification done with accuracy: {acc:.4f}")
+                st.dataframe(pd.DataFrame(report).T)
+
+                fig, ax = plt.subplots(figsize=(10, 6))
+                sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", ax=ax)
+                st.pyplot(fig)
+                
+                
+            elif p_type in ['multilabel-indicator', 'multioutput', 'multiclass-multioutput']:
         
                 st.warning("multi label and multi output and multiclass detected. Ye abhi supported nahi hai.")
+
             else:
                 st.error(f"kuch unexpected type mila: {p_type}")
 
