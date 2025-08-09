@@ -3,6 +3,21 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+
+import os
+import subprocess
+
+username = os.environ["GITHUB_USERNAME"]
+token = os.environ["GITHUB_TOKEN"]
+
+repo_url = f"https://{username}:{token}@github.com/shivamparihari-46/Bhai-GPT.git"
+
+if not os.path.exists("Bhai-GPT"):
+    subprocess.run(["git", "clone", repo_url])
+    print("Private repo cloned successfully!")
+else:
+    print("ℹRepo already exists, skipping clone.")
+
 st.set_page_config(
     page_title="Bhai-GPT", 
     layout="wide",
@@ -364,3 +379,6 @@ if uploaded_file is not None:
         fig, ax = plt.subplots(figsize=(15, 10))
         sns.heatmap(n.corr(), annot=True, cmap="coolwarm", ax=ax)
         st.pyplot(fig)
+
+
+
