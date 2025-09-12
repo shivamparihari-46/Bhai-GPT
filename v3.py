@@ -373,53 +373,7 @@ if uploaded_file is not None:
             st.error(f"Bhai, kuch error aa gaya model training mein: {e}")
             st.stop()
             
-        import shap
-
         
-        best_model_name = best_model['model']
-        best_model_instance = models[best_model_name]
-        best_model_instance.fit(xtrain, ytrain)
-
-        st.markdown("### Explainable AI (SHAP Analysis)")
-
-        try:
-            
-            if best_model_name in ["desicion tree ", "random forest", "xgb"]:
-                explainer = shap.TreeExplainer(best_model_instance)
-                shap_values = explainer.shap_values(xtest)
-
-            elif best_model_name == "logistic regression":
-                explainer = shap.LinearExplainer(best_model_instance, xtrain)
-                shap_values = explainer.shap_values(xtest)
-
-            else:
-                background = shap.sample(xtrain, 50, random_state=42)  
-                explainer = shap.KernelExplainer(best_model_instance.predict_proba, background)
-                shap_values = explainer.shap_values(xtest.iloc[:50, :])
-
-            
-            st.subheader(" Global Feature Importance (SHAP Summary)")
-            fig, ax = plt.subplots(figsize=(10, 6))
-            shap.summary_plot(shap_values, xtest, feature_names=xtest.columns, show=False)
-            st.pyplot(fig)
-
-            st.subheader("🧍 Local Explanation for a Prediction")
-            sample_idx = st.slider("Select sample index:", 0, len(xtest)-1, 0)
-            sample = xtest.iloc[sample_idx:sample_idx+1]
-
-            if isinstance(shap_values, list): 
-                shap_value_to_use = shap_values[1][sample_idx]
-                expected_value = explainer.expected_value[1]
-            else:
-                shap_value_to_use = shap_values[sample_idx]
-                expected_value = explainer.expected_value
-
-            fig = shap.force_plot(expected_value, shap_value_to_use, sample, matplotlib=True, show=False)
-            st.pyplot(fig)
-
-        except Exception as e:
-            st.warning(f"SHAP explainability mein dikkat aayi: {e}")
-
 
     elif section=="coorelation-map":
         
