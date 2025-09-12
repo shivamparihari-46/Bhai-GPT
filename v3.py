@@ -427,7 +427,7 @@ if uploaded_file is not None:
         fig, ax = plt.subplots()
         fig, ax = plt.subplots(figsize=(15, 10))
         sns.heatmap(n.corr(), annot=True, cmap="coolwarm", ax=ax)
-       
+        st.pyplot(fig)
 
 
 
