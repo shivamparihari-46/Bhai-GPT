@@ -326,6 +326,12 @@ if uploaded_file is not None:
 
 
                 best_model = max(result, key=lambda x: x['accuracy'])
+                best_model_name = best_model['model']
+                best_model_obj = models[best_model_name]
+                best_model_obj.fit(xtrain, ytrain)   
+
+                st.session_state['best_model_name'] = best_model_name
+                st.session_state['best_model_obj'] = best_model_obj
                 st.success(f"Best model: {best_model['model'].upper()} with accuracy {best_model['accuracy']}")
                 
                 fig, ax = plt.subplots()
@@ -353,9 +359,7 @@ if uploaded_file is not None:
                 sns.barplot(x='Importance', y='Feature', data=importance_df, ax=ax, palette='coolwarm')
                 st.pyplot(fig)
                 
-                best_model_name = best_model['model']
-                st.session_state['best_model_name'] = best_model_name
-                st.session_state['best_model_obj'] = models[best_model_name]  
+              
                 st.session_state['xtrain'] = xtrain
                 st.session_state['xtest'] = xtest
                 st.session_state['ytrain'] = ytrain
