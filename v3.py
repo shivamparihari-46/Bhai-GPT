@@ -435,7 +435,7 @@ if uploaded_file is not None:
                     explainer = shap.Explainer(model, X_train_df)
 
             
-                shap_values = explainer(X_test_df, check_additivity=False)
+                shap_values = explainer(X_test_df)
                
                
 
