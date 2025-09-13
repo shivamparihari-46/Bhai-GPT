@@ -73,7 +73,8 @@ if uploaded_file is not None:
          " Unique Values",
          "coorelation-map",
          "ML Predictor",
-         "SHAP Analysis"
+         "SHAP Analysis",
+         "Report"
          ]
     )
     
