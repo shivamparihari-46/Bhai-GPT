@@ -424,21 +424,31 @@ if uploaded_file is not None:
             try:
                 
                 model_name = st.session_state['best_model_name'].lower()
+                X_train_df = pd.DataFrame(X_train, columns=features)
+                X_test_df = pd.DataFrame(X_test, columns=features)
 
                 if "forest" in model_name or "tree" in model_name or "xgb" in model_name:
                     explainer = shap.TreeExplainer(model)
                 elif "linear" in model_name or "logistic" in model_name:
-                    explainer = shap.LinearExplainer(model, X_train)
+                    explainer = shap.LinearExplainer(model, X_train_df)
                 else:
-                    explainer = shap.Explainer(model, X_train)
+                    explainer = shap.Explainer(model, X_train_df)
 
             
-                shap_values = explainer(X_test, check_additivity=False)
+                shap_values = explainer(X_test_df, check_additivity=False)
+               
+               
 
                 st.markdown("### SHAP Summary Plot:")
-                fig, ax = plt.subplots(figsize=(10, 6))
-                shap.summary_plot(shap_values, X_test, feature_names=features, show=False)
-                st.pyplot(fig)
+
+                if isinstance(shap_values, list): 
+                    class_idx = st.selectbox("Kaun si class explain karni hai?", range(len(shap_values)))
+                    shap.summary_plot(shap_values[class_idx], X_test_df, feature_names=features, show=False)
+                else:
+                    shap.summary_plot(shap_values, X_test_df, feature_names=features, show=False)
+
+                st.pyplot(plt.gcf()) 
+
 
             except Exception as e:
                 st.error(f"Bhai, SHAP analysis mein error aaya: {e}")
