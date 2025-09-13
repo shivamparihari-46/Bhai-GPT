@@ -72,7 +72,9 @@ if uploaded_file is not None:
          " Pairplot", 
          " Unique Values",
          "coorelation-map",
-         "ML Predictor"]
+         "ML Predictor",
+         "SHAP Analysis"
+         ]
     )
     
     if section == " Data Overview":
@@ -267,6 +269,16 @@ if uploaded_file is not None:
                 fig=sns.lmplot(x='y-test',y='prediction',data=e)
                 st.pyplot(fig.fig)
                 
+                best_model = {"model": "linear regression", "r2": r2, "mse": mse}
+                st.session_state['best_model_name'] = "linear regression"
+                st.session_state['best_model_obj'] = lr
+                st.session_state['xtrain'] = xtrain
+                st.session_state['ytrain'] = ytrain
+                st.session_state['xtest'] = xtest
+                st.session_state['ytest'] = ytest
+                st.session_state['features'] = ip.columns.tolist()
+
+                
             elif p_type=='binary':
                 from sklearn.svm import SVC
                 from sklearn.linear_model import LogisticRegression
@@ -340,6 +352,15 @@ if uploaded_file is not None:
                 fig, ax = plt.subplots(figsize=(12,6))
                 sns.barplot(x='Importance', y='Feature', data=importance_df, ax=ax, palette='coolwarm')
                 st.pyplot(fig)
+                
+                best_model_name = best_model['model']
+                st.session_state['best_model_name'] = best_model_name
+                st.session_state['best_model_obj'] = models[best_model_name]  
+                st.session_state['xtrain'] = xtrain
+                st.session_state['xtest'] = xtest
+                st.session_state['ytrain'] = ytrain
+                st.session_state['ytest'] = ytest
+                st.session_state['features'] = ip.columns.tolist()
 
          
             
@@ -361,6 +382,16 @@ if uploaded_file is not None:
                 sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", ax=ax)
                 st.pyplot(fig)
                 
+                best_model = {"model": "random forest", "accuracy": acc}
+                st.session_state['best_model_name'] = "random forest"
+                st.session_state['best_model_obj'] = clf
+                st.session_state['xtrain'] = xtrain
+                st.session_state['ytrain'] = ytrain
+                st.session_state['xtest'] = xtest
+                st.session_state['ytest'] = ytest
+                st.session_state['features'] = ip.columns.tolist()
+
+                
                 
             elif p_type in ['multilabel-indicator', 'multioutput', 'multiclass-multioutput']:
         
@@ -372,8 +403,28 @@ if uploaded_file is not None:
         except Exception as e:
             st.error(f"Bhai, kuch error aa gaya model training mein: {e}")
             st.stop()
-            
         
+        
+        
+    elif section == "SHAP Analysis":
+        if "best_model_obj" not in st.session_state:
+            st.warning("Bhai pehle ML Predictor section mein model train kar.")
+        else:
+            st.success(f"SHAP analysis for best model: {st.session_state['best_model_name'].upper()}")
+            model = st.session_state['best_model_obj']
+            X_train = st.session_state['xtrain']
+            X_test = st.session_state['xtest']
+            features = st.session_state['features']
+
+            import shap
+            explainer = shap.Explainer(model, X_train)
+            shap_values = explainer(X_test)
+
+            st.markdown("### SHAP Summary Plot:")
+            fig, ax = plt.subplots(figsize=(10, 6))
+            shap.summary_plot(shap_values, X_test, feature_names=features, show=False)
+            st.pyplot(fig)
+
 
     elif section=="coorelation-map":
         
