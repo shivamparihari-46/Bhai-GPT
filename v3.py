@@ -521,10 +521,13 @@ if uploaded_file is not None:
                 pdf.set_font("Arial", size=12)
                 for line in report_lines:
                     pdf.multi_cell(0, 8, txt=str(line))
-                pdf_buffer = io.BytesIO()
-                pdf.output(pdf_buffer)
-                pdf_buffer.seek(0)
+
+                
+                pdf_bytes = pdf.output(dest="S").encode("latin1")
+                pdf_buffer = io.BytesIO(pdf_bytes)
+
                 return pdf_buffer
+
             
             pdf_file = create_pdf(report_lines)
             
