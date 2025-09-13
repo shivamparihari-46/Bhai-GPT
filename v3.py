@@ -461,6 +461,80 @@ if uploaded_file is not None:
         fig, ax = plt.subplots(figsize=(15, 10))
         sns.heatmap(n.corr(), annot=True, cmap="coolwarm", ax=ax)
         st.pyplot(fig)
+        
+    elif section == "Report":
+        st.markdown("## Generate PDF Report of Your Analysis")
+        
+        
+        if "best_model_obj" not in st.session_state:
+            st.warning("Bhai, pehle ML Predictor section run karo tabhi report generate kar sakte ho.")
+        else:
+            
+            report_lines = [
+                f"ML Model Report",
+                "===================",
+                f"Best Model: {st.session_state['best_model_name'].upper()}",
+            ]
+            
+            
+            if hasattr(st.session_state['best_model_obj'], 'predict'):
+                ytest = st.session_state['ytest']
+                ypred = st.session_state['best_model_obj'].predict(st.session_state['xtest'])
+                try:
+                    from sklearn.metrics import r2_score, mean_squared_error
+                    r2 = r2_score(ytest, ypred)
+                    mse = mean_squared_error(ytest, ypred)
+                    report_lines.append(f"R2 Score: {r2:.4f}")
+                    report_lines.append(f"Mean Squared Error: {mse:.4f}")
+                except:
+                    pass
+
+            
+            try:
+                from sklearn.metrics import accuracy_score, classification_report
+                ytest = st.session_state['ytest']
+                ypred = st.session_state['best_model_obj'].predict(st.session_state['xtest'])
+                acc = accuracy_score(ytest, ypred)
+                report_lines.append(f"Accuracy: {acc:.4f}")
+                
+                
+                report_dict = classification_report(ytest, ypred, output_dict=True)
+                report_df = pd.DataFrame(report_dict).T
+                report_lines.append("\nClassification Report:")
+                for idx, row in report_df.iterrows():
+                    report_lines.append(f"{idx}: {row.to_dict()}")
+            except:
+                pass
+            
+            
+            if "features" in st.session_state:
+                report_lines.append(f"\nFeatures used ({len(st.session_state['features'])}): {', '.join(st.session_state['features'])}")
+            
+            
+            from fpdf import FPDF
+            import io
+            
+            def create_pdf(report_lines):
+                pdf = FPDF()
+                pdf.add_page()
+                pdf.set_font("Arial", size=12)
+                for line in report_lines:
+                    pdf.multi_cell(0, 8, txt=str(line))
+                pdf_buffer = io.BytesIO()
+                pdf.output(pdf_buffer)
+                pdf_buffer.seek(0)
+                return pdf_buffer
+            
+            pdf_file = create_pdf(report_lines)
+            
+            
+            st.download_button(
+                label="Download PDF Report",
+                data=pdf_file,
+                file_name="ML_Report.pdf",
+                mime="application/pdf"
+            )
+
 
 
 
