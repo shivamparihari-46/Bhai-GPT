@@ -56,7 +56,7 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-uploaded_file = st.file_uploader("Upload your CSV file bhai", type=['csv'])
+uploaded_file = st.file_uploader("Upload your CSV file bhai, save 60% of your time and go on dates!", type=['csv'])
 
 if uploaded_file is not None:
     x = pd.read_csv(uploaded_file)
