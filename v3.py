@@ -71,7 +71,7 @@ if uploaded_file is not None:
          " Graph Visualization", 
          " Pairplot", 
          " Unique Values",
-         "corelation-map",
+         "correlation-map",
          "ML Predictor",
          "SHAP Analysis",
          "Report"
@@ -455,7 +455,7 @@ if uploaded_file is not None:
                 st.error(f"Bhai, SHAP analysis mein error aaya: {e}")
 
 
-    elif section=="corelation-map":
+    elif section=="correlation-map":
         
         n=x.select_dtypes(include='number')
         fig, ax = plt.subplots()
