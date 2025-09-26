@@ -50,7 +50,7 @@ st.markdown("""
 
 
 
-st.title("📊Bhai-GPT – Your Desi Data Scientist")
+st.title("Bhai-GPT – Your Desi Data Scientist")
 st.markdown(
     "<p style='font-size:28px; font-weight:600;'>Why do it yourself?? when Bhai-GPT is here!!</p>", 
     unsafe_allow_html=True
