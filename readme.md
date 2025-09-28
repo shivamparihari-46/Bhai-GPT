@@ -21,10 +21,13 @@ Upload any CSV dataset, and Bhai-GPT will analyze, visualize, clean, and even bu
 ├── advertising.csv           # Sample dataset for testing
 ├── titanic dataset.csv       # Another sample dataset
 ├── Mobile Price Predictor    # Possibly a directory or dataset (rename clearly if needed)
-├── SS1.png                   # Screenshot - File Upload & Overview
-├── SS2.png                   # Screenshot - Correlation Heatmap
-├── SS3_1.png                 # Screenshot - Model Comparison
-├── SS3_2.png                 # Screenshot - Feature Importance
+├── overview.png                   # Screenshot - File Upload & Overview
+├── correlation.png                   # Screenshot - Correlation Heatmap
+├── model_comparision.png                 # Screenshot - Model Comparison
+├── feature_imp.png                 # Screenshot - Feature Importance
+├── shap.png                   # Screenshot - SHAP analysis
+├── report.png                   # Screenshot - Generated ML report
+
 ```
 
 ## 🚀 Features
