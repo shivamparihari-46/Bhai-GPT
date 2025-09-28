@@ -83,6 +83,7 @@ Upload any CSV dataset, and Bhai-GPT will analyze, visualize, clean, and even bu
 
 * 🔗 [LinkedIn](https://www.linkedin.com/in/shivam-parihari-40746a325)
 * 📫 Email: [pariharishivam59@gmail.com](mailto:pariharishivam59@gmail.com)
+* 🔗 [Portfolio](https://shivam-nexus.lovable.app/)
 
 
 ## 📄 License
