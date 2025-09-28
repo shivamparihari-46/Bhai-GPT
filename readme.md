@@ -43,16 +43,22 @@ Upload any CSV dataset, and Bhai-GPT will analyze, visualize, clean, and even bu
 ##  Bhai-GPT in Action
 
 ### File Upload & Overview
-![File Upload](SS1.png)
+![File Upload](overview.png)
 
 ### ML feature importance
-![ML Prediction](SS3_2.png)
+![ML Prediction](feature_imp.png)
 
 ### ML Model Comparison
-![ML Comparison](SS3_1.png)
+![ML Comparison](model_comparision.png)
 
 ### Correlation Heatmap
-![Heatmap](SS2.png)
+![Heatmap](correlation.png)
+
+### SHAP
+![Heatmap](shap.png)
+
+### Report
+![Heatmap](report.png)
 
 >  These are just a few insights. Explore the full Bhai-GPT dashboard to unlock more features.
 
