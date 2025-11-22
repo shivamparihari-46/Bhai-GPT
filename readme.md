@@ -63,7 +63,7 @@ Upload any CSV dataset, and Bhai-GPT will analyze, visualize, clean, and even bu
 ### Report
 ![Heatmap](report.png)
 
->  These are just a few insights. Explore the full Bhai-GPT dashboard to unlock more features
+>  These are just a few insights. Explore the full Bhai-GPT dashboard to unlock more features.
 
 ## 🧰 Tech Stack
 
